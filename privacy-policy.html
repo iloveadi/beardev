@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>개인정보처리방침 – 로또 확률 예측기</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0f1117;
+            color: #cbd5e1;
+            padding: 40px 20px;
+            line-height: 1.8;
+        }
+
+        .wrap {
+            max-width: 720px;
+            margin: 0 auto;
+            background: #1a1f2e;
+            border: 1px solid rgba(0, 243, 255, 0.15);
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0, 243, 255, 0.1);
+            color: #00f3ff;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+        }
+
+        .meta {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 15px;
+            color: #00f3ff;
+            margin: 32px 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+        }
+
+        p {
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        ul li {
+            margin-bottom: 6px;
+        }
+
+        .highlight {
+            background: rgba(0, 243, 255, 0.05);
+            border-left: 3px solid #00f3ff;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .warning {
+            background: rgba(255, 180, 0, 0.06);
+            border-left: 3px solid #fbbf24;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 14px;
+            color: #fbbf24;
+        }
+
+        footer {
+            margin-top: 48px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 12px;
+            color: #475569;
+            text-align: center;
+        }
+
+        a {
+            color: #00f3ff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="badge">Privacy Policy</div>
+        <h1>개인정보처리방침</h1>
+        <p class="meta">최종 업데이트: 2026년 2월 26일 &nbsp;|&nbsp; 로또 확률 예측기 (Lotto Predictor)</p>
+        <h2>1. 개요</h2>
+        <p>본 개인정보처리방침은 크롬 확장 프로그램 <strong>로또 확률 예측기 (Lotto Predictor)</strong> (이하 "앱")의 개인정보 처리 방식을 설명합니다.</p>
+        <div class="highlight">✅ 본 앱은 사용자의 개인 식별 정보를 일절 수집, 저장, 전송하지 않습니다.</div>
+        <h2>2. 수집하는 정보</h2>
+        <p>본 앱이 다루는 데이터는 다음과 같습니다. 이는 모두 사용자의 기기 내에만 저장되며 외부로 전송되지 않습니다.</p>
+        <ul>
+            <li><strong>통계 가중치 설정값:</strong> 사용자가 조절한 슬라이더 수치 (0~100). 앱 환경설정 유지 목적으로 기기 로컬 스토리지에 저장됩니다.</li>
+            <li><strong>로또 당첨 이력 데이터:</strong> 동행복권 공개 API에서 수신한 역대 1등 당첨 번호. 통계 분석에 사용되며 기기 로컬 스토리지에 저장됩니다.</li>
+        </ul>
+        <h2>3. 수집하지 않는 정보</h2>
+        <ul>
+            <li>이름, 이메일, 전화번호 등 개인 식별 정보</li>
+            <li>위치 정보</li>
+            <li>결제 또는 금융 정보</li>
+            <li>브라우징 기록</li>
+            <li>사용자 생성 콘텐츠</li>
+        </ul>
+        <h2>4. 외부 API 사용</h2>
+        <p>앱은 최신 로또 당첨 번호를 가져오기 위해 다음 외부 서비스를 이용합니다:</p>
+        <ul>
+            <li><a href="https://www.dhlottery.co.kr" target="_blank">동행복권 (dhlottery.co.kr)</a> — 공식 당첨 번호 API</li>
+            <li><a href="https://api.allorigins.win" target="_blank">AllOrigins API</a> — CORS 우회 프록시</li>
+        </ul>
+        <p>이 요청에는 어떠한 사용자 식별 정보도 포함되지 않습니다.</p>
+        <h2>5. 데이터 저장 및 보안</h2>
+        <p>모든 데이터는 <code>chrome.storage.local</code>을 통해 사용자의 기기 내에만 저장됩니다. 개발자 또는 제3자 서버로 전송되지 않습니다.</p>
+        <h2>6. 제3자 공유</h2>
+        <p>본 앱은 어떠한 데이터도 제3자와 공유하지 않습니다.</p>
+        <h2>7. 아동 개인정보 보호</h2>
+        <p>본 앱은 13세 미만 아동을 대상으로 하지 않으며, 아동의 개인정보를 의도적으로 수집하지 않습니다.</p>
+        <h2>8. 면책 조항</h2>
+        <div class="warning">⚠️ 본 앱이 제공하는 번호는 통계적 알고리즘에 기반한 추천일 뿐, 실제 당첨을 보장하지 않으며 결과에 대한 책임은 사용자에게 있습니다.</div>
+        <h2>9. 방침 변경</h2>
+        <p>본 방침은 변경될 수 있으며, 변경 시 본 페이지를 통해 공지됩니다. 지속적인 앱 사용은 변경된 방침에 대한 동의로 간주됩니다.</p>
+        <h2>10. 문의</h2>
+        <p>개인정보 처리 관련 문의는 아래로 연락주세요:<br />
+            <strong>Bear Dev.</strong> &nbsp;|&nbsp; 문의: <a href="https://github.com/iloveadi/beardev/issues"
+                target="_blank">github.com/iloveadi/beardev/issues</a>
+        </p>
+        <footer>&copy; 2026 Bear Dev. &nbsp;|&nbsp; 로또 확률 예측기 (Lotto Predictor)</footer>
+    </div>
+</body>
+
+</html>
