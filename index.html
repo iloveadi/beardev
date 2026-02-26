@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Visualizer</title>
+    <!-- 확장 프로그램 정책상(CSP) 로컬에 저장된 Tailwind CSS를 사용 -->
+    <link rel="stylesheet" href="tailwind.min.css">
+    <link rel="icon" type="image/png" href="icons/icon128.png">
+    <style>
+        :root {
+            --gng-accent: #facc15;
+            /* Tailwind yellow-400 */
+            --gng-accent-hover: #eab308;
+            /* Tailwind yellow-500 */
+            --gng-dark: #0f1115;
+            /* Deep space dark */
+            --gng-card: #1a1d24;
+            /* Slightly lighter card background */
+        }
+
+        body {
+            background-color: var(--gng-dark);
+            color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .bg-card {
+            background-color: var(--gng-card);
+        }
+
+        .text-accent {
+            color: var(--gng-accent);
+        }
+
+        .bg-accent {
+            background-color: var(--gng-accent);
+        }
+
+        .hover\:bg-accent:hover {
+            background-color: var(--gng-accent-hover);
+        }
+
+        .ring-accent:focus {
+            box-shadow: 0 0 0 2px var(--gng-accent);
+        }
+
+        .shadow-glow {
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.15);
+        }
+
+        .hover\:shadow-glow:hover {
+            box-shadow: 0 0 30px rgba(250, 204, 21, 0.3);
+        }
+
+        /* 다크모드 환경의 커스텀 스크롤바 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gng-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        /* 커스텀 토글 스위치 */
+        input:checked~.toggle-bg {
+            background-color: #facc15;
+        }
+
+        input:checked~.toggle-bg .toggle-dot {
+            transform: translateX(1.5rem);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col pt-4 pb-8 px-4">
+    <!-- 앱 상단: 카피라이트, 버전 히스토리, 개인정보처리방침 -->
+    <header
+        class="max-w-6xl mx-auto w-full mb-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 px-2 space-y-2 md:space-y-0">
+        <div>
+            &copy; 2026 Bear Dev. All rights reserved.
+        </div>
+        <div class="flex space-x-4 items-center">
+            <span class="font-bold text-accent px-2 py-0.5 bg-gray-800 rounded-md border border-gray-700">v1.0</span>
+            <button id="changelogBtn" class="hover:text-yellow-500 transition-colors">버전 히스토리</button>
+            <span class="text-gray-700">•</span>
+            <button id="privacyBtn" class="hover:text-yellow-500 transition-colors">개인정보처리방침</button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- 컨트롤 패널 (좌측) -->
+        <section
+            class="lg:col-span-5 bg-card p-8 rounded-2xl border border-gray-800 shadow-2xl flex flex-col space-y-8 relative overflow-hidden">
+            <!-- 시각적인 그라데이션 포인트 라인 -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-orange-500"></div>
+
+            <header>
+                <h1 class="text-3xl font-extrabold text-white mb-3 tracking-tight">
+                    Auto <span class="text-accent">Visualizer</span>
+                </h1>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    배경 이미지와 음악을 업로드하세요. 음악의 주파수에 반응하는 다이나믹한 비주얼라이저 영상을 즉시 브라우저에서 렌더링하여 영상 파일로 추출합니다.
+                </p>
+            </header>
+
+            <div class="space-y-6 flex-grow">
+                <!-- 오디오 입력 폼 -->
+                <div class="group">
+                    <label
+                        class="block text-sm font-semibold text-gray-300 mb-2 group-hover:text-white transition-colors">1.
+                        음악 파일 (MP3/WAV)</label>
+                    <input type="file" id="audioInput" accept="audio/*"
+                        class="block w-full text-sm text-gray-400 file:mr-4 file:py-3 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-gray-800 file:text-gray-200 hover:file:bg-gray-700 hover:file:text-white cursor-pointer border border-gray-800 rounded-xl bg-gray-900 focus:outline-none ring-accent transition-all">
+                </div>
+
+                <!-- 이미지 입력 폼 -->
+                <div class="group">
+                    <label
+                        class="block text-sm font-semibold text-gray-300 mb-2 group-hover:text-white transition-colors">2.
+                        배경 이미지 (JPG/PNG)</label>
+                    <input type="file" id="imageInput" accept="image/*"
+                        class="block w-full text-sm text-gray-400 file:mr-4 file:py-3 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-gray-800 file:text-gray-200 hover:file:bg-gray-700 hover:file:text-white cursor-pointer border border-gray-800 rounded-xl bg-gray-900 focus:outline-none ring-accent transition-all">
+                </div>
+
+                <!-- 타이틀 입력 폼 -->
+                <div class="group">
+                    <label
+                        class="block text-sm font-semibold text-gray-300 mb-2 group-hover:text-white transition-colors">3.
+                        영상 제목 (선택)</label>
+                    <input type="text" id="titleInput" placeholder="예: 한밤중의 시티팝 믹스"
+                        class="block w-full text-sm text-gray-100 placeholder-gray-600 px-5 py-3 rounded-xl border border-gray-800 bg-gray-900 focus:outline-none ring-accent transition-all shadow-inner">
+                </div>
+
+                <!-- 채널명/서브타이틀 입력 폼 -->
+                <div class="group">
+                    <label
+                        class="block text-sm font-semibold text-gray-300 mb-2 group-hover:text-white transition-colors">4.
+                        채널명 입력 (선택 - 박스 형태로 표시)</label>
+                    <input type="text" id="channelInput" placeholder="예: K-retrowave (비워두면 표시 안 됨)"
+                        class="block w-full text-sm text-gray-100 placeholder-gray-600 px-5 py-3 rounded-xl border border-gray-800 bg-gray-900 focus:outline-none ring-accent transition-all shadow-inner">
+                </div>
+
+                <!-- 비주얼라이저 스타일 선택 -->
+                <div class="group">
+                    <label
+                        class="block text-sm font-semibold text-gray-300 mb-2 group-hover:text-white transition-colors">5.
+                        비주얼라이저 스타일</label>
+                    <select id="visualizerStyle"
+                        class="block w-full text-sm text-gray-200 px-5 py-3 rounded-xl border border-gray-800 bg-gray-900 focus:outline-none ring-accent transition-all shadow-inner cursor-pointer appearance-none">
+                        <option value="blocks">🧱 분절된 레트로 블록 (Classic)</option>
+                        <option value="bars">📊 부드러운 네온 막대 (Solid)</option>
+                        <option value="circle">⭕ 원형 스펙트럼 (Circular)</option>
+                        <option value="particles">✨ 네온 파티클 (Particles)</option>
+                    </select>
+                </div>
+
+
+                <!-- 설정 옵션들 -->
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <!-- 커스텀 네온 테마 -->
+                    <div class="group mx-auto">
+                        <label
+                            class="block text-sm font-semibold text-gray-300 mb-2 group-hover:text-white transition-colors">6.
+                            네온 테마 컬러</label>
+                        <select id="colorTheme"
+                            class="block w-full text-sm text-gray-200 px-4 py-3 rounded-xl border border-gray-800 bg-gray-900 focus:outline-none ring-accent transition-all shadow-inner cursor-pointer appearance-none">
+                            <option value="yellow">🟡 일렉트릭 옐로우</option>
+                            <option value="pink">🌸 사이버 핑크</option>
+                            <option value="blue">🔵 네온 스카이블루</option>
+                            <option value="green">🟢 매트릭스 그린</option>
+                            <option value="purple">🟣 딥 퍼플</option>
+                            <option value="red">🔴 루비 레드</option>
+                            <option value="cyan">💠 사이버 시안</option>
+                            <option value="orange">🟠 선셋 오렌지</option>
+                            <option value="indigo">🌌 미스틱 인디고</option>
+                            <option value="lime">🍏 네온 라임</option>
+                        </select>
+                    </div>
+
+                    <!-- 영상 비율 (추가) -->
+                    <div class="group">
+                        <label
+                            class="block text-sm font-semibold text-gray-300 mb-2 group-hover:text-white transition-colors">
+                            7. 화면 비율
+                        </label>
+                        <select id="ratioSelect"
+                            class="block w-full text-sm text-gray-200 px-4 py-3 rounded-xl border border-gray-800 bg-gray-900 focus:outline-none ring-accent transition-all shadow-inner cursor-pointer appearance-none">
+                            <option value="9:16">📱 세로형 (1080x1920)</option>
+                            <option value="16:9">💻 가로형 (1920x1080)</option>
+                        </select>
+                    </div>
+
+                    <!-- 페이드 효과 토글 -->
+                    <div class="group flex flex-col justify-center col-span-2 md:col-span-1">
+                        <label
+                            class="block text-sm font-semibold text-gray-300 mb-2 group-hover:text-white transition-colors">8.
+                            사운드 효과</label>
+
+                        <label for="fadeToggle" class="flex items-center cursor-pointer mt-1">
+                            <div class="relative">
+                                <input type="checkbox" id="fadeToggle" class="sr-only" checked />
+                                <div class="toggle-bg block bg-gray-700 w-12 h-6 rounded-full transition duration-300">
+                                    <div
+                                        class="toggle-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform duration-300">
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="ml-3 text-sm font-medium text-gray-300">페이드 인/아웃</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button id="startBtn"
+                    class="w-full bg-accent hover:bg-accent text-black font-extrabold py-4 px-6 rounded-xl transition-all shadow-glow hover:shadow-glow flex justify-center items-center text-lg">
+                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                            clip-rule="evenodd" fill-rule="evenodd"></path>
+                    </svg>
+                    렌더링 및 녹화 시작
+                </button>
+            </div>
+        </section>
+
+        <!-- 디스플레이 패널 (우측) -->
+        <section
+            class="lg:col-span-7 bg-card rounded-2xl border border-gray-800 shadow-2xl overflow-hidden flex flex-col h-full ring-1 ring-white ring-opacity-5">
+            <!-- 패널 상단 상태 표시바 -->
+            <div class="px-6 py-4 flex justify-between items-center border-b border-gray-800 bg-gray-900 bg-opacity-50">
+                <h2 class="text-sm font-bold text-gray-300 flex items-center tracking-wide">
+                    <span id="recDot"
+                        class="w-2.5 h-2.5 rounded-full bg-red-500 mr-3 animate-pulse hidden shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
+                    프리뷰 모니터
+                </h2>
+                <div class="flex space-x-3">
+                    <span id="resolutionBadge"
+                        class="px-2.5 py-1 bg-gray-800 rounded-md text-xs text-gray-300 font-mono font-medium border border-gray-700">1080x1920</span>
+                    <span
+                        class="px-2.5 py-1 bg-gray-800 rounded-md text-xs text-gray-300 font-mono font-medium border border-gray-700 text-accent">60
+                        FPS</span>
+                </div>
+            </div>
+
+            <!-- 캔버스 컨테이너 -->
+            <div id="canvasContainer" class="w-full flex-grow bg-black relative flex items-center justify-center p-6"
+                style="aspect-ratio: 9/16; max-height: 70vh;">
+                <!-- 메인 비주얼라이저 캔버스 -->
+                <canvas id="canvas" width="1080" height="1920"
+                    class="h-full w-auto object-contain bg-black rounded-lg shadow-2xl border border-gray-900"></canvas>
+
+                <!-- 파일 업로드 대기용 오버레이 (미관용) -->
+                <div id="idleOverlay"
+                    class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-60 pointer-events-none transition-opacity duration-300">
+                    <svg class="w-16 h-16 text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    <p class="text-gray-400 font-medium">배경 이미지와 음악(MP3/WAV)을 등록해주세요</p>
+                </div>
+            </div>
+
+            <!-- 프로그레스 바 -->
+            <div id="progressContainer" class="px-6 py-4 bg-gray-900 bg-opacity-80 border-t border-gray-800 hidden">
+                <div class="flex justify-between items-center mb-2 text-xs text-gray-300 font-bold tracking-wide">
+                    <span>렌더링 진행률</span>
+                    <span id="progressText" class="text-accent font-mono">0%</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-3 shadow-inner overflow-hidden border border-gray-700">
+                    <div id="progressBar"
+                        class="bg-gradient-to-r from-yellow-500 to-orange-500 h-3 rounded-full transition-all duration-300 ease-out shadow-glow"
+                        style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- 하단 안내 문구 -->
+            <div class="px-6 py-4 bg-gray-900 bg-opacity-50 border-t border-gray-800 flex items-center justify-center">
+                <svg class="w-4 h-4 text-gray-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="text-xs text-gray-400">
+                    영상 렌더링이 진행되는 동안 탭을 닫거나 백그라운드로 이동하지 마세요. 녹화가 끝나면 영상이 자동으로 다운로드됩니다.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+
+
+    <!-- 모달: 버전 히스토리 -->
+    <div id="changelogModal"
+        class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50 transition-opacity">
+        <div
+            class="bg-gray-900 rounded-2xl w-full max-w-lg shadow-2xl border border-gray-700 p-6 m-4 relative max-h-[80vh] flex flex-col">
+            <h2 class="text-xl font-bold text-white mb-4">버전 히스토리 (Changelog)</h2>
+            <div class="overflow-y-auto pr-2 flex-grow text-sm text-gray-300 space-y-4 custom-scrollbar">
+                <div>
+                    <h3 class="font-bold text-accent text-lg">v1.0 <span
+                            class="text-xs font-normal text-gray-500 ml-2">2026-02-27 (공식 런칭)</span></h3>
+                    <ul class="list-disc pl-5 mt-2 space-y-1">
+                        <li>공식 Chrome Web Store 런칭 🚀</li>
+                        <li>비주얼라이저 스타일 4종 확정 (Retro Blocks, Solid Bars, Circular, Particles)</li>
+                        <li>프리미엄 네온 로고 아이콘 제작 및 연동</li>
+                        <li>UI 입력 항목 순서 최적화</li>
+                        <li>렌더링 성능 및 안정성 개선</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-400 text-lg">v0.1 <span
+                            class="text-xs font-normal text-gray-500 ml-2">2026-02-27</span></h3>
+                    <ul class="list-disc pl-5 mt-2 space-y-1">
+                        <li>초기 개발 시작 (Initial Development)</li>
+                        <li>앱 이름 변경 및 리브랜딩 (Auto Visualizer)</li>
+                        <li>로컬 비디오 인코딩 및 실시간 오디오 스펙트럼 시각화 기능 지원</li>
+                        <li>사용자에 최적화된 다크 모드 UI와 네온 컬러 테마 10종 탑재</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end shrink-0">
+                <button id="closeChangelogBtn"
+                    class="px-5 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-white font-semibold transition-colors ring-accent">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 모달: 개인정보처리방침 -->
+    <div id="privacyModal"
+        class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50 transition-opacity">
+        <div
+            class="bg-gray-900 rounded-2xl w-full max-w-lg shadow-2xl border border-gray-700 p-6 m-4 relative max-h-[80vh] flex flex-col">
+            <h2 class="text-xl font-bold text-white mb-4">개인정보처리방침</h2>
+            <div
+                class="overflow-y-auto pr-2 flex-grow text-sm text-gray-300 space-y-4 leading-relaxed custom-scrollbar">
+                <p><strong class="text-white">Bear Dev.</strong>(이하 '개발자')가 개발한 <strong class="text-white">Auto
+                        Visualizer</strong>(이하 '본 확장 프로그램')는 사용자의 개인정보 및 데이터를 강력히 보호하며, 다음의 방침을 엄격히 준수합니다.</p>
+
+                <h3 class="font-bold text-white mt-4">1. 수집하는 개인정보 항목</h3>
+                <p>본 확장 프로그램은 사용자가 서비스를 이용하는 과정에서 <strong class="text-accent font-medium">어떠한 개인정보, 기기 정보, 위치 정보도 수집, 저장
+                        또는 외부에 전송하지 않습니다.</strong></p>
+
+                <h3 class="font-bold text-white mt-4">2. 데이터(이미지/오디오 파일)의 처리 및 보관</h3>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>사용자가 앱 내에서 업로드하는 모든 배경 이미지 데이터와 음악(오디오) 파일은 사용자의 브라우저 내(Local Network/Client-side) 메모리에서만 사용됩니다.
+                    </li>
+                    <li>본 확장 프로그램은 별도의 외부 서버나 클라우드로 사용자의 영상, 이미지, 혹은 음악 파일을 전송(Upload)하지 않으며, 백업하지 않습니다.</li>
+                    <li>렌더링된 최종 비디오 파일(MP4)은 사용자의 PC 로컬 환경에 직접 저장됩니다.</li>
+                </ul>
+
+                <h3 class="font-bold text-white mt-4">3. 개인정보의 목적 외 사용 및 제3자 제공</h3>
+                <p>수집하는 개인정보 및 데이터가 일절 존재하지 않으므로, 어떠한 경우에도 외부(제3자)로 사용자 정보나 이용 내역이 전송되거나 제공되지 않습니다.</p>
+
+                <h3 class="font-bold text-white mt-4">4. 기타</h3>
+                <p>본 프로그램은 사용자 편의를 위해 제공되며, 관련된 모든 동작은 Manifest V3의 규격과 보안 정책을 절대적으로 준수합니다.</p>
+
+                <div class="mt-4 pt-4 border-t border-gray-700 text-xs text-gray-500">
+                    <p><strong>개발자:</strong> Bear Dev.</p>
+                    <p><strong>적용일자:</strong> 2026년 2월 26일</p>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end shrink-0">
+                <button id="closePrivacyBtn"
+                    class="px-5 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-white font-semibold transition-colors ring-accent">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 스크립트는 확장 기능 보안 정책에 따라 외부 파일을 로드해야 합니다 -->
+    <script src="script.js"></script>
+</body>
+
+</html>
